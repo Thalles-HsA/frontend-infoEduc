@@ -1,0 +1,292 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema 
+	attributeFormDefault="unqualified" 
+	elementFormDefault="qualified" 
+	targetNamespace="http://www.tce.se.gov.br/sagres2023/xml/sagresEdu" 
+	xml:lang="pt-BR"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	xmlns:edu="http://www.tce.se.gov.br/sagres2023/xml/sagresEdu"
+	xmlns:gen="http://www.tce.se.gov.br/sagres2023/xml/genericos"
+	xmlns:tab="http://www.tce.se.gov.br/sagres2023/xml/tabelasInternas"
+>
+	
+	<xsd:import namespace = "http://www.tce.se.gov.br/sagres2023/xml/genericos" schemaLocation="genericos.xsd"/>
+	<xsd:import namespace = "http://www.tce.se.gov.br/sagres2023/xml/tabelasInternas" schemaLocation="tabelasInternas.xsd"/>
+	
+	<xsd:simpleType name="turno_t">
+		<xsd:restriction base="xsd:integer">
+			<xsd:enumeration value="1"/>	<!-- 1 - MATUTINO -->
+			<xsd:enumeration value="2"/>	<!-- 2 - VESPERTINO -->
+			<xsd:enumeration value="3"/>	<!-- 3 - NOTURNO -->
+			<xsd:enumeration value="4"/>	<!-- 4 - INTEGRAL -->			
+		</xsd:restriction>
+	</xsd:simpleType>
+		
+	<xsd:simpleType name="data_t">
+		<xsd:restriction base="xsd:date">    
+			<xsd:minInclusive value="2021-01-01"/>    			 
+		</xsd:restriction>	
+	</xsd:simpleType>	
+		
+	<xsd:simpleType name="cpf_t">
+		<xsd:restriction base="xsd:string">
+			<xsd:whiteSpace value="preserve"/>
+			<xsd:pattern value="[0-9]{11}"/>
+		</xsd:restriction>
+	</xsd:simpleType>				
+		
+	<xsd:simpleType name="idEscola_t">
+		<xsd:restriction base="xsd:integer">
+			<xsd:enumeration value="28012623"/>	<!-- 28012623 - CRECHE MAE EMILIA -->
+			<xsd:enumeration value="28024370"/>	<!-- 28024370 - EMEF ADELVAN CAVALCANTI BAPTISTA -->
+			<xsd:enumeration value="28024389"/>	<!-- 28024389 - EMEF RIVALDO MOREIRA GUIMARAES -->
+			<xsd:enumeration value="28024400"/>	<!-- 28024400 - EMEI SOLDADINHO DE CHUMBO -->
+		</xsd:restriction>
+	</xsd:simpleType>			
+								
+	<xsd:complexType name="matricula_t">
+	  <xsd:sequence>
+		<xsd:element name="numero">
+		  <xsd:simpleType>
+			<xsd:restriction base="xsd:string">
+			  <xsd:whiteSpace value="collapse"/>
+			  <xsd:maxLength value="100" />
+			</xsd:restriction>
+		  </xsd:simpleType>
+		</xsd:element>
+		<xsd:element name="data_matricula" type="edu:data_t" />
+		<xsd:element name="data_cancelamento" type="edu:data_t" minOccurs="0" />
+		<xsd:element name="numero_faltas" type="xsd:integer" />
+		<xsd:element name="aprovado" type="xsd:boolean" minOccurs="0" />
+		<xsd:element name="aluno" type="edu:aluno_t" />
+	  </xsd:sequence>
+	</xsd:complexType>	
+		
+	<xsd:complexType name="aluno_t">
+	  <xsd:sequence>
+		<xsd:element name="cpfAluno" type="edu:cpf_t" minOccurs="0" />		
+		<xsd:element name="data_nascimento">		
+			<xsd:simpleType>
+				<xsd:restriction base="xsd:date">    
+					<xsd:minInclusive value="1923-01-01"/>    			 
+				</xsd:restriction>	
+			</xsd:simpleType>		
+		</xsd:element>		
+		<xsd:element name="nome">
+		  <xsd:simpleType>
+			<xsd:restriction base="xsd:string">
+			  <xsd:whiteSpace value="collapse"/>
+			  <xsd:maxLength value="200" />
+			</xsd:restriction>		  
+		  </xsd:simpleType>
+		</xsd:element>
+		<xsd:element name="pcd" type="xsd:boolean" />
+		<xsd:element name="sexo">	
+			<xsd:simpleType>
+				<xsd:restriction base="xsd:integer">
+					<xsd:enumeration value="1"/>	<!-- 1 - Masculino -->
+					<xsd:enumeration value="2"/>	<!-- 2 - Feminino -->
+					<xsd:enumeration value="3"/>	<!-- 3 - Outros -->				
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:element>
+	  </xsd:sequence>
+	</xsd:complexType>	
+
+	<xsd:complexType name="horario_t">
+	  <xsd:sequence>
+		<xsd:element name="dia_semana">	
+			<xsd:simpleType>
+				<xsd:restriction base="xsd:integer">
+					<xsd:enumeration value="1"/>	<!-- 1 - Segunda-Feira -->
+					<xsd:enumeration value="2"/>	<!-- 2 - Terça-Feira -->
+					<xsd:enumeration value="3"/>	<!-- 3 - Quarta-Feira -->	
+					<xsd:enumeration value="4"/>	<!-- 4 - Quinta-Feira -->
+					<xsd:enumeration value="5"/>	<!-- 5 - Sexta-Feira -->
+					<xsd:enumeration value="6"/>	<!-- 6 - Sábado -->						
+					<xsd:enumeration value="7"/>	<!-- 7 - Domingo -->
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:element>	  
+		<xsd:element name="duracao" type="xsd:integer" />
+		<xsd:element name="hora_inicio" type="xsd:time" />	
+		<xsd:element name="disciplina">
+		  <xsd:simpleType>
+			<xsd:restriction base="xsd:string">
+			  <xsd:whiteSpace value="collapse"/>
+			  <xsd:maxLength value="100" />
+			</xsd:restriction>
+		  </xsd:simpleType>
+		</xsd:element>				
+		<xsd:element name="cpfProfessor" type="edu:cpf_t" maxOccurs="unbounded"/>		
+	  </xsd:sequence>
+	</xsd:complexType>		    					
+			
+	<xsd:complexType name="turma_t">
+	  <xsd:sequence>
+		<xsd:element name="periodo">		
+			<xsd:simpleType>
+				<xsd:restriction base="xsd:integer">
+					<xsd:enumeration value="0"/>	<!-- 0 - Anual -->
+					<xsd:enumeration value="1"/>	<!-- 1 - 1° Semestre -->
+					<xsd:enumeration value="2"/>	<!-- 2 - 2º Semestre -->				
+				</xsd:restriction>
+			</xsd:simpleType>		
+		</xsd:element>
+		<xsd:element name="descricao" minOccurs="0">
+		  <xsd:simpleType>
+			<xsd:restriction base="xsd:string">
+			  <xsd:whiteSpace value="collapse"/>
+			  <xsd:maxLength value="50" />
+			</xsd:restriction>
+		  </xsd:simpleType>
+		</xsd:element>		
+		<xsd:element name="turno" type="edu:turno_t" />
+		<xsd:element name="serie" type="edu:serie_t" maxOccurs="unbounded" />	
+		<xsd:element name="matricula" type="edu:matricula_t" maxOccurs="unbounded"/>
+		<xsd:element name="horario" type="edu:horario_t" maxOccurs="unbounded">
+			<xsd:unique name="chaveProfessor">
+				<xsd:selector xpath="edu:cpfProfessor"/>
+				<xsd:field xpath="."/>
+			</xsd:unique>				
+		</xsd:element>		
+		<xsd:element name="finalTurma" type="xsd:boolean" minOccurs="0"/>
+	  </xsd:sequence>
+	</xsd:complexType>
+		
+	<xsd:complexType name="serie_t">
+	  <xsd:sequence>	
+		<xsd:element name="descricao">
+			<xsd:simpleType>
+				<xsd:restriction base="xsd:string">
+					<xsd:whiteSpace value="collapse"/>
+					<xsd:maxLength value="50" />
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:element>  
+		<xsd:element name="modalidade">
+			<xsd:simpleType>
+				<xsd:restriction base="xsd:integer">
+					<xsd:enumeration value="1"/>	<!-- 1 - Educação Infantil -->
+					<xsd:enumeration value="2"/>	<!-- 2 - Ensino Fundamental -->
+					<xsd:enumeration value="3"/>	<!-- 3 - Ensino Médio -->				
+					<xsd:enumeration value="4"/>	<!-- 4 - Educação de Jovens e Adultos -->				
+					<xsd:enumeration value="5"/>	<!-- 5 - Atendimento Educacional Especializado -->	
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:element>
+	  </xsd:sequence>
+	</xsd:complexType>	
+			
+	<xsd:complexType name="profissional_t">
+	  <xsd:sequence>
+		<xsd:element name="cpfProfissional" type="edu:cpf_t" />
+		<xsd:element name="especialidade">
+		  <xsd:simpleType>
+			<xsd:restriction base="xsd:string">
+			  <xsd:whiteSpace value="collapse"/>
+			  <xsd:maxLength value="50" />
+			</xsd:restriction>
+		  </xsd:simpleType>
+		</xsd:element>
+		<xsd:element name="idEscola" type="edu:idEscola_t" minOccurs="0"/>
+		<xsd:element name="fundeb" type="xsd:boolean" />
+		<xsd:element name="atendimento" type="edu:atendimento_t" minOccurs="0" maxOccurs="unbounded"/>		
+	  </xsd:sequence>
+	</xsd:complexType>			
+
+	<xsd:complexType name="diretor_t">
+	  <xsd:sequence>
+		<xsd:element name="cpfDiretor" type="edu:cpf_t" />
+		<xsd:element name="nrAto">
+		  <xsd:simpleType>
+			<xsd:restriction base="xsd:string">
+			  <xsd:whiteSpace value="collapse"/>
+			  <xsd:maxLength value="100" />
+			</xsd:restriction>
+		  </xsd:simpleType>
+		</xsd:element>
+	  </xsd:sequence>
+	</xsd:complexType>		
+	
+	<xsd:complexType name="atendimento_t">
+	  <xsd:sequence>
+		<xsd:element name="data" type="edu:data_t" />
+		<xsd:element name="local" minOccurs="0">
+		  <xsd:simpleType>
+			<xsd:restriction base="xsd:string">
+			  <xsd:whiteSpace value="collapse"/>
+			  <xsd:maxLength value="200" />
+			</xsd:restriction>
+		  </xsd:simpleType>		  
+		</xsd:element>		
+	  </xsd:sequence>
+	</xsd:complexType>	
+	
+	<xsd:complexType name="cardapio_t">
+	  <xsd:sequence>
+		<xsd:element name="data" type="edu:data_t" />
+		<xsd:element name="turno" type="edu:turno_t" />
+		<xsd:element name="descricao_merenda">
+		  <xsd:simpleType>
+			<xsd:restriction base="xsd:string">
+			  <xsd:whiteSpace value="collapse"/>
+			  <xsd:maxLength value="300" />
+			</xsd:restriction>
+		  </xsd:simpleType>
+		</xsd:element>
+		<xsd:element name="ajustado" type="xsd:boolean" />
+	  </xsd:sequence>
+	</xsd:complexType>	
+	
+	<xsd:complexType name="escola_t">
+		<xsd:sequence>
+			<xsd:element name="idEscola" type="edu:idEscola_t"/>		
+			<xsd:element name="turma" type="edu:turma_t" maxOccurs="unbounded"/>							
+			<xsd:element name="diretor" type="edu:diretor_t"/>			
+			<xsd:element name="cardapio" type="edu:cardapio_t" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>	
+	
+	<!-- CABECALHO -->	
+	<xsd:complexType name="cabecalho_t">
+		<xsd:sequence>
+			<xsd:element nillable="false" name="codigoUnidGestora" type="tab:codigoUnidGestora_t"/>
+			<xsd:element nillable="false" name="nomeUnidGestora" type="gen:nomeUnidGestora_t"/>
+			<xsd:element nillable="false" name="cpfResponsavel" type="gen:cpfGestor_t"/>
+			<xsd:element nillable="false" name="cpfGestor" type="gen:cpfGestor_t"/>
+			<xsd:element nillable="false" name="anoReferencia" type="gen:anoReferencia_t"/>
+			<xsd:element nillable="false" name="mesReferencia" type="gen:mesReferencia_t"/>
+			<xsd:element nillable="false" name="versaoXml" type="gen:versaoXml_t"/>
+			<xsd:element nillable="false" name="diaInicPresContas" type="gen:diaInicPresContas_t"/>
+			<xsd:element nillable="false" name="diaFinaPresContas" type="gen:diaFinaPresContas_t"/>			
+		</xsd:sequence>
+	</xsd:complexType>		
+	
+	<xsd:complexType name="educacao_t">
+		<xsd:sequence>	
+			<xsd:element name="PrestacaoContas" type="edu:cabecalho_t" />		
+			<xsd:element name="escola" type="edu:escola_t" maxOccurs="unbounded"/>
+			<xsd:element name="profissional" type="edu:profissional_t" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>	
+	
+	<!-- ROOT -->	
+	<xsd:element name="educacao" type="edu:educacao_t">
+	<!--
+		<xsd:unique name="chaveAluno">
+			<xsd:selector xpath="edu:escola/edu:turma/edu:matricula/edu:aluno"/>
+			<xsd:field xpath="edu:cpfAluno"/>
+		</xsd:unique>	
+	
+		<xsd:unique name="chaveDiretor">
+			<xsd:selector xpath="edu:escola/edu:diretor"/>
+			<xsd:field xpath="edu:cpfDiretor"/>
+		</xsd:unique>	
+	-->
+		<xsd:unique name="chaveEscola">
+			<xsd:selector xpath="edu:escola"/>
+			<xsd:field xpath="edu:idEscola"/>
+		</xsd:unique>		
+	</xsd:element>
+</xsd:schema>
