@@ -1,0 +1,30 @@
+.container-xml {
+    margin: 3rem;
+}
+
+.container-xml div {
+    display: flex;
+}
+
+.container-xml thead {
+    height: 3rem;
+    margin-bottom: 1rem;
+}
+
+.container-xml tbody {
+    margin-bottom: 1rem;
+    box-sizing: border-box;
+    height: calc(100% - 50px);
+    overflow: auto;
+}
+
+.container-xml td {
+    padding: 0rem 1rem;
+    margin: 0;
+    box-sizing: border-box;
+
+}
+
+.container-xml svg {
+    padding: 0 1rem;
+}
