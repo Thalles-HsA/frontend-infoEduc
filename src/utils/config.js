@@ -1,4 +1,4 @@
-export const api = "http://localhost:5000/api";
+export const api = "https://info-educ.herokuapp.com/api";
 
 export const requestConfig = (method, data, xml = null) => {
     let config;
