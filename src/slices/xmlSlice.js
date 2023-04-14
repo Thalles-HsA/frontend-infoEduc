@@ -27,6 +27,23 @@ export const xmlUpload = createAsyncThunk(
     }
 );
 
+export const xmlValidar = createAsyncThunk(
+    "xml/validar",
+    async (xml, thunkAPI) => {
+
+        const data = await xmlService.validarXml(xml);
+
+        console.log(data);
+
+        // Check for errors
+        if (data.errors) {
+            return thunkAPI.rejectWithValue(data.errors);
+        }
+
+        return data;
+    }
+);
+
 export const getXml = createAsyncThunk("xml/getallxml", async () => {
     const data = await xmlService.getXml();
 
@@ -45,25 +62,13 @@ export const deleteXml = createAsyncThunk(
     return data;
 });
 
-export const downloadXml = createAsyncThunk(
-    "xml/downloadxml",
-    async (id, thunkAPI) => {
-        const data = await xmlService.downloadXml(id);
-
-        console.log(data)
-
-        if(data.errors) {
-            return thunkAPI.rejectWithValue(data.errors)
-        }
-    }
-)
-
 export const xmlSlice = createSlice({
     name: "upload",
     initialState,
     reducers: {
         resetMessage: (state) => {
             state.message = null;
+            state.success = true;
         },
     },
     extraReducers: (builder) => {
@@ -78,13 +83,12 @@ export const xmlSlice = createSlice({
                 state.error = null;
                 state.xml = action.payload;
                 state.xmls.unshift(state.xml);
-                state.message = "Arquivo XML Válido: Enviado com sucesso para o servidor";
+                state.message = "Arquivo XML enviado com sucesso para o servidor";
             })
             .addCase(xmlUpload.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload;
                 state.xml = null;
-                state.message = "Arquivo XML Inválido: verifique os erros e envie novamente";
             })
             .addCase(getXml.pending, (state) => {
                 state.loading = true;
@@ -116,15 +120,24 @@ export const xmlSlice = createSlice({
                 state.error = action.payload;
                 state.xml = null;
             })
-            .addCase(downloadXml.pending, (state) => {
+            .addCase(xmlValidar.pending, (state) => {
                 state.loading = true;
                 state.error = null;
+                state.success = false;
             })
-            .addCase(downloadXml.fulfilled, (state, action) => {
+            .addCase(xmlValidar.fulfilled, (state, action) => {
                 state.loading = false;
                 state.success = true;
                 state.error = null;
                 state.xml = action.payload;
+                state.xmls.unshift(state.xml);
+                state.message = "Arquivo XML Válido: Enviado com sucesso para o servidor";
+            })
+            .addCase(xmlValidar.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload;
+                state.xml = null;
+                state.message = "Arquivo XML Inválido: verifique os erros e envie novamente";
             })
     },
 })

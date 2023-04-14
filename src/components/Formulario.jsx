@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 // import axios from 'axios';
 
-import { xmlUpload, resetMessage, } from '../slices/xmlSlice';
+import { xmlUpload, resetMessage, xmlValidar, } from '../slices/xmlSlice';
 import { useSelector, useDispatch } from "react-redux";
 
-
+import jsPDF from "jspdf"
 
 import "./Formulario.css"
 import GetXml from './GetXml';
@@ -14,7 +14,7 @@ function Formulario() {
   const [err, setErr] = useState("")
   const [nomeArquivo, setNomeArquivo] = useState("");
   const [submit, setSubmit] = useState(false);
-
+  const [validar, setValidar] = useState(true)
 
   const dispatch = useDispatch();
 
@@ -24,8 +24,6 @@ function Formulario() {
     sucess: sucessXml,
     message: messageXml,
   } = useSelector((state) => state.xml);
-
-  const data = useSelector((state) => state.xml)
 
   function resetComponentMessage() {
     dispatch(resetMessage());
@@ -44,6 +42,7 @@ function Formulario() {
     const xmlData = {
       title: nomeArquivo,
       xml: file,
+      validado: validar,
     };
 
 
@@ -55,11 +54,17 @@ function Formulario() {
 
     formData.append("xml", xmlFormData);
 
+      console.log(validar)
     try {
-      
-      dispatch(xmlUpload(formData))
 
-      console.log(data)
+      if(validar) {
+        console.log("validar")
+        dispatch(xmlValidar(formData)) 
+      } else {
+        console.log("salvar")
+        dispatch(xmlUpload(formData))
+      }
+
       setSubmit(true)
     } catch (error) {
       console.log(error);
@@ -74,11 +79,35 @@ function Formulario() {
 
   };
 
+  function gerarPDF(errorXml) {
+    const doc = new jsPDF();
+
+    // Cria uma lista com os erros
+    const listaErros = errorXml.map((error) => {
+      // Divide a mensagem de erro em linhas com no máximo 50 caracteres
+      const mensagemLinhas = error.message.match(/.{1,45}/g);
+      // Retorna a mensagem formatada com as quebras de linha
+      return `Erro na linha ${error.line} | coluna ${error.column} - ${mensagemLinhas.join('\n' + ' '.repeat(45))}`;
+    });
+
+    // Adiciona a lista ao PDF
+    doc.text('Lista de erros:', 10, 10);
+    doc.text(listaErros.join('\n'), 10, 30, { textColor: 'black' });
+
+    // Salva o arquivo
+    doc.save('erros.pdf');
+  }
+
+  function handleCheckboxChange(event) {
+    setValidar(event.target.checked);
+    console.log(validar)
+  }
+
   const handleClear = () => {
     setFile(null);
     setErr(null);
     setNomeArquivo('');
-    setSubmit(false)
+    setSubmit(false);
     resetComponentMessage();
   };
 
@@ -100,6 +129,8 @@ function Formulario() {
             </>
           ) : (
             <>
+
+
               <div style={{ position: 'relative' }}>
 
                 {err && <span style={{ position: 'absolute', top: '-2.5rem', left: '1.2rem' }}>{err}</span>}
@@ -110,7 +141,14 @@ function Formulario() {
                 </label>
 
                 {nomeArquivo && (
-                  <p style={{ position: 'absolute', top: '2.5rem', left: '1.2rem' }} className="arquivo"> {nomeArquivo}</p>
+                  <>
+                    <p style={{ position: 'absolute', top: '2.5rem', left: '1.2rem' }} className="arquivo"> {nomeArquivo}</p>
+                    <label className='input-validar'>
+                      Validar XML
+                      <input type="checkbox" checked={validar} onChange={handleCheckboxChange} />
+                    </label>
+                  </>
+
                 )}
               </div>
               {!file
@@ -125,11 +163,13 @@ function Formulario() {
           }
         </form>
 
-
         {!sucessXml ? (
           <div>
             {messageXml && (
               <>
+                {errorXml &&
+                  <button type='button' onClick={() => gerarPDF(errorXml)} className="botao-pdf">Gerar PDF com erros</button>
+                }
                 <h3>Resultado:</h3>
                 <p>{messageXml}</p>
 
@@ -151,7 +191,7 @@ function Formulario() {
 
         }
       </div >
-      <GetXml />
+      <GetXml validar={validar}/>
     </>
   );
 }

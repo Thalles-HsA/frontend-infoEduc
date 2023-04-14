@@ -4,15 +4,15 @@ import { api } from "../utils/config";
 
 
 import { AiOutlineCloudDownload } from 'react-icons/ai'
-import { BsFillTrashFill, BsCheck } from "react-icons/bs"
+import { BsFillTrashFill, BsCheck, BsXLg } from "react-icons/bs"
 
 import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 
 // Redux
-import { getXml, deleteXml } from '../slices/xmlSlice';
+import { getXml, deleteXml, resetMessage } from '../slices/xmlSlice';
 
-const GetXml = () => {
+const GetXml = ({ validar }) => {
 
     const dispatch = useDispatch();
     const { xmls } = useSelector((state) => state.xml);
@@ -21,9 +21,16 @@ const GetXml = () => {
         dispatch(getXml());
     }, [dispatch]);
 
+    function resetComponentMessage() {
+        dispatch(resetMessage());
+    }
+
     const handleDelete = (id) => {
         dispatch(deleteXml(id));
+        resetComponentMessage();
     };
+
+
 
     const formatDate = (date) => {
         const data = new Date(date);
@@ -35,7 +42,7 @@ const GetXml = () => {
 
     return (
         <div className="container-xml">
-            {xmls &&
+            {xmls.length > 0 && 
                 <table>
                     <thead>
                         <tr>
@@ -51,14 +58,18 @@ const GetXml = () => {
                             <tr key={xml._id}>
                                 <td>{xml.title}</td>
                                 <td>{formatDate(xml.data)}</td>
-                                <td><BsCheck color="green"/>Validado com sucesso</td>
+                                { xml.validado ?
+                                <td><BsCheck color="green" />Validado com sucesso</td> :
+                                <td><BsXLg color="red" />XML não validado</td>
+                                }
+                                
                                 <td>
                                     <a href={`${api}/download/${xml._id}`} download>
                                         <AiOutlineCloudDownload size="32px" color="#00ADB5" cursor="pointer" />
                                     </a>
                                 </td>
                                 <td>
-                                    <BsFillTrashFill size="24px" cursor="pointer" onClick={() => handleDelete(xml._id)}/>
+                                    <BsFillTrashFill size="24px" cursor="pointer" onClick={() => handleDelete(xml._id)} />
                                 </td>
                             </tr>
                         ))}
@@ -67,7 +78,7 @@ const GetXml = () => {
             }
 
             {xmls && xmls.length === 0 &&
-                <h2>Ainda não tem XML validado</h2>
+                <h2>Não há registro de envio de XML para o banco de dados</h2>
             }
         </div>
     )

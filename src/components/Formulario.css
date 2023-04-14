@@ -65,3 +65,20 @@ button:disabled{
     font-size: 1rem;
     font-weight: 700;
 }
+
+.botao-pdf{
+    font-size: 0.7rem;
+    padding: 1rem;
+    font-weight: 400;
+    background-color: #393E46;
+}
+
+.input-validar{
+    padding: 0.5rem !important;
+    background-color: #EEEEEE;
+    color: #222831;
+}
+
+input[type="checkbox"]{
+    padding: 1rem;
+}
