@@ -82,15 +82,11 @@ function Formulario() {
   function gerarPDF(errorXml) {
     const doc = new jsPDF();
 
-    // Cria uma lista com os erros
     const listaErros = errorXml.map((error) => {
-      // Divide a mensagem de erro em linhas com no máximo 50 caracteres
       const mensagemLinhas = error.message.match(/.{1,45}/g);
-      // Retorna a mensagem formatada com as quebras de linha
       return `Erro na linha ${error.line} | coluna ${error.column} - ${mensagemLinhas.join('\n' + ' '.repeat(45))}`;
     });
 
-    // Adiciona a lista ao PDF
     doc.text('Lista de erros:', 10, 10);
     doc.text(listaErros.join('\n'), 10, 30, { textColor: 'black' });
 
@@ -137,7 +133,7 @@ function Formulario() {
 
                 <label>
                   Selecione seu arquivo XML
-                  <input type="file" onChange={handleFileChange} accept=".xml" />
+                  <input type="file" onChange={handleFileChange} accept=".xml" cursor="pointer"/>
                 </label>
 
                 {nomeArquivo && (
